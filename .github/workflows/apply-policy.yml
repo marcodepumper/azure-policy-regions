@@ -1,0 +1,37 @@
+name: 'Apply Azure Policies'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  apply-policies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+
+      - name: 'Login to Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Create and Assign Policies'
+        run: |
+          for policy_file in policies/*.json; do
+            policy_name=$(basename "$policy_file" .json)
+            echo "Processing policy: $policy_name"
+            
+            # Create the policy definition
+            az policy definition create --name "$policy_name" \
+              --display-name "$policy_name" \
+              --description "Policy defined in $policy_file" \
+              --rules "$policy_file" \
+              --mode All
+
+            # Assign the policy
+            az policy assignment create --name "$policy_name-assignment" \
+              --policy "$policy_name" \
+              --scope "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+          done

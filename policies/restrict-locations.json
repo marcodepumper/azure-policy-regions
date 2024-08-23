@@ -1,0 +1,25 @@
+{
+    "properties": {
+      "displayName": "Allowed US Locations",
+      "description": "This policy restricts resource creation to South Central US and North Central US.",
+      "policyRule": {
+        "if": {
+          "not": {
+            "field": "location",
+            "in": [
+              "southcentralus",
+              "northcentralus"
+            ]
+          }
+        },
+        "then": {
+          "effect": "deny"
+        }
+      },
+      "metadata": {
+        "version": "1.0.0",
+        "category": "General"
+      }
+    }
+  }
+  
