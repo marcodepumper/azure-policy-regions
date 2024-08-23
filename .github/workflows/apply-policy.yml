@@ -1,9 +1,7 @@
 name: 'Apply Azure Policies'
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   apply-policies:
